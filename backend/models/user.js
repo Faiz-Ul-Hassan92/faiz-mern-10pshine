@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
-const userSchema = new mongoose.schema({
+const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required : true,
@@ -19,12 +19,12 @@ const userSchema = new mongoose.schema({
 }, {timestamps: true})
 
 
-userSchema.pre("save", async function(next) {
-    if (!this.isModified("password")) return next(); //if it isnt changed, dont hash again
-
+userSchema.pre("save", async function() {
+    if (!this.isModified("password")) return; //if it isnt changed, dont hash again
+    
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt); //adding salt to the password for secure storing
-    next(); //without this mongoose wont return 
+    
 })
 
 
