@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db.js';
 import router from './routes/auth.js'
+import notesRouter from './routes/notes.js'
 
 dotenv.config();
 
@@ -12,6 +13,8 @@ const app = express();
 app.use(express.json());
 
 app.use("/api/users", router)
+app.use("/api/notes", notesRouter)
+
 
 connectDB();
 
