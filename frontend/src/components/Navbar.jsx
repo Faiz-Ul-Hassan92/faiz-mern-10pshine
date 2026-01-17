@@ -20,7 +20,7 @@ const Navbar = ({user, setUser}) => {
      { user && (
         <>
         <div className="flex items-center space-x-4">
-            <span className="text-grey-300 font-medium">
+            <span className="text-gray-300 font-medium">
                 {user.username}</span>
             <button onClick={handleLogout} 
             className="bg-red-600 text-white 
