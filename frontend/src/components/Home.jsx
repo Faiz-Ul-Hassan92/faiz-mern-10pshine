@@ -2,12 +2,14 @@ import React from "react"
 import axios from "axios"
 import { useState, useEffect } from "react"
 import NoteModal from "./NoteModel"
+import { useLocation } from "react-router-dom"
 
 const Home = () => {
     const [notes, setNotes] = useState([])
     const [error, setError] =  useState("")
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editNote, setEditNote] = useState(null)
+    const location = useLocation()
 
 
     const handleEdit = (note) => {
@@ -23,12 +25,22 @@ const Home = () => {
                 return
             }
 
+            const searchParams = new URLSearchParams(location.search)
+            const search = searchParams.get("search") || ""
+
             const {data} = await axios.get("/api/notes", {
                 headers: {Authorization: `Bearer ${token}`}
             })
-            
+
+
+            const filteredNotes = search ? data.filter((note) => 
+            note.title.toLowerCase().includes(search.toLowerCase()) 
+            || note.description.toLowerCase().includes(search.toLowerCase())
+            ) : data
+
+            setNotes(filteredNotes)
+
             console.log(data)
-            setNotes(data)
         } catch(err) {
             setError(err.response?.data?.message || "Failed to fetch Notes")
             console.error("Error fetching notes:", err)
@@ -50,7 +62,7 @@ const Home = () => {
 
     useEffect(() => {
         fetchNotes()
-    }, [])
+    }, [location.search])
 
     const handleDelete = async (id) => {
         try {
