@@ -1,5 +1,5 @@
 import express from 'express'
-import User from '../models/User.js';
+import User from '../models/user.js';
 import { protect } from '../middleware/auth.js';
 import jwt from 'jsonwebtoken';
 
@@ -34,6 +34,29 @@ router.post('/register', async (req, res) => {
          })
     }catch(err) {
         res.status(500).json({message: "Server Error"})
+    }
+})
+
+
+//updating password
+router.put("/changingPassword", protect, async (req, res) => {
+    const { password } = req.body
+
+    try {
+        if(!password) {
+            return res.status(400).json({message:"Can't Update to an empty password"})
+        }
+
+        const user = await User.findById(req.user._id)
+
+        user.password = password
+
+        await user.save()
+
+        return res.status(200).json({message:"Password updated successfully"})
+
+    }catch(err) {
+        res.status(500).json({message:"Server Error, Password unchanged."})
     }
 })
 

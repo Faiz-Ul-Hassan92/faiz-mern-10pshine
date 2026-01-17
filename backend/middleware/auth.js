@@ -1,6 +1,5 @@
-import User from "../models/User.js";
+import User from "../models/user.js";
 import jwt from "jsonwebtoken";
-  
 
 //I generated it using nodes crypto library's random generator
 
