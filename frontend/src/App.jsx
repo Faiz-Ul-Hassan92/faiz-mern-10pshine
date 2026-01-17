@@ -5,6 +5,7 @@ import Login from "./components/Login.jsx"
 import Register from "./components/Register.jsx"
 import Home from "./components/Home.jsx"
 import axios from "axios"
+import Profile from "./components/Profile.jsx"
 
 function App() {
   const [user, setUser] = useState(null)
@@ -31,7 +32,7 @@ function App() {
 
   if(loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center
+      <div className="min-h-screen bg-[#1d324f] flex items-center
       justify-center" >
         <div className="text-xl text-white">
           Loading...
@@ -41,7 +42,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-500">
+    <div className="min-h-screen bg-[#1d324f]">
       <Navbar user = {user} setUser={setUser}/>
       <Routes>
         <Route path="/login" 
@@ -49,6 +50,7 @@ function App() {
         <Route path="/register" 
         element={ user ? <Navigate to= "/" /> : <Register setUser={setUser}/>} />
         <Route path="/" element={user ? <Home /> : <Navigate to="/login" /> } />
+        <Route path="/profile" element={user ? <Profile user={user} setUser={setUser}/> : <Navigate to="/login" /> } />
       </Routes>
       </div>
   )

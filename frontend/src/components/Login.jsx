@@ -29,6 +29,9 @@ const Login = ({setUser}) => {
     }
 
 
+
+    //forgot password is to be implemented as well like 
+    //change password
     return <div className="container mx-auto max-w-md mt-10 p-6 bg-white 
     rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold mb-6 text-center">
@@ -55,6 +58,16 @@ const Login = ({setUser}) => {
                 required 
                 />
             </div>
+
+
+
+            
+            <div className="-mt-3 text-right ">
+            <Link 
+            className= "text-blue-600 underline " to="/dummy">
+            Forgot Password?</Link>
+            </div>
+
             <button className="w-full bg-blue-500 text-white py-2 rounded-md
             hover:bg-blue-700">Login</button>
         </form>

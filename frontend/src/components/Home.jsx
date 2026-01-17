@@ -84,7 +84,7 @@ const Home = () => {
 
 
     return (<div className="container mx-auto px-4 py-8 min-h-screen
-    bg-gray-500">
+    bg-[#011229]">
         {error && <p className="text-red-400 mb-4">{error}</p>}
         <NoteModal isOpen={isModalOpen} onClose={() => {
             setIsModalOpen(false)
@@ -104,11 +104,11 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
         gap-4">
             {notes.map((note) =>( 
-                <div className="bg-gray-800 p-4 rounded-lg shadow-md" 
+                <div className="bg-[#1d324f] p-4 rounded-lg shadow-md" 
                 key={note._id}>
-                    <h3 className="text-lg font-md text-white mb-2">{note.title}</h3>
-                    <p className="text-gray-300 mb-4">{note.description}</p>
-                    <p className="text-sm text-gray-400 mb-4">{new Date(note.updatedAt).toLocaleString()}
+                    <h3 className="text-lg font-md text-white font-bold mb-2">{note.title}</h3>
+                    <p className="text-white mb-4">{note.description}</p>
+                    <p className="text-sm text-white mb-4">{new Date(note.updatedAt).toLocaleString()}
                         </p>
                     <div className="flex space-x-2">
                     <button onClick={() => handleEdit(note)} className="bg-yellow-600 text-white
