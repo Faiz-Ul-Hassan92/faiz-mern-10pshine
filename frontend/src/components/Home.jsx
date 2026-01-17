@@ -1,12 +1,19 @@
 import React from "react"
 import axios from "axios"
 import { useState, useEffect } from "react"
+import NoteModal from "./NoteModel"
 
 const Home = () => {
     const [notes, setNotes] = useState([])
     const [error, setError] =  useState("")
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [editNote, setEditNote] = useState(null)
 
-    console.log(notes)
+
+    const handleEdit = (note) => {
+        setEditNote(note)
+        setIsModalOpen(true)
+    }
 
     const fetchNotes = async() => {
         try {
@@ -26,6 +33,19 @@ const Home = () => {
             setError(err.response?.data?.message || "Failed to fetch Notes")
             console.error("Error fetching notes:", err)
         }
+    }
+
+
+    const handleSaveNote =(newNote) => {
+        if(editNote) {
+            setNotes(notes.map((note)=> note._id === newNote._id ? newNote : note))
+        } else {
+            setNotes([...notes, newNote])
+        }
+
+
+        setEditNote(null)
+        setIsModalOpen(false)
     }
 
     useEffect(() => {
@@ -54,7 +74,16 @@ const Home = () => {
     return (<div className="container mx-auto px-4 py-8 min-h-screen
     bg-gray-500">
         {error && <p className="text-red-400 mb-4">{error}</p>}
-        <button className="fixed bottom-6 right-6 w-14 h-14 
+        <NoteModal isOpen={isModalOpen} onClose={() => {
+            setIsModalOpen(false)
+            setEditNote(null)
+           }
+        }
+
+        note={editNote}
+        onSave={handleSaveNote}
+        />
+        <button onClick={() => setIsModalOpen(true)} className="fixed bottom-6 right-6 w-14 h-14 
         bg-gray-800 text-white text-3xl rounded-full shadow-lg 
         hover:bg-gray-900 flex items-center justify-center">
             <span className="flex items-center justify-center h-full
@@ -70,7 +99,7 @@ const Home = () => {
                     <p className="text-sm text-gray-400 mb-4">{new Date(note.updatedAt).toLocaleString()}
                         </p>
                     <div className="flex space-x-2">
-                    <button className="bg-yellow-600 text-white
+                    <button onClick={() => handleEdit(note)} className="bg-yellow-600 text-white
                     px-3 py-1 rounded-md hover:bg-yellow-700">Edit</button>
                     <button onClick={() => handleDelete(note._id)} className="bg-red-600 text-white
                     px-3 py-1 rounded-lg hover:bg-red-700">Delete</button>
