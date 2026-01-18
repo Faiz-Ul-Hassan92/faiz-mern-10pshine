@@ -13,7 +13,7 @@ const Profile = ({ user, setUser}) =>  {
 
 
         //this link is to be made, its dummy right now
-        await axios.put("/api/users/changePassword", {
+        await axios.put("/api/users/changingPassword", {
             password
         })
         setChangePassword(false)
