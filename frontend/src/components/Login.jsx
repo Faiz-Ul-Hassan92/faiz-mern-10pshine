@@ -64,7 +64,7 @@ const Login = ({setUser}) => {
             
             <div className="-mt-3 text-right ">
             <Link 
-            className= "text-blue-600 underline " to="/dummy">
+            className= "text-blue-600 underline " to="/forgotPassword">
             Forgot Password?</Link>
             </div>
 

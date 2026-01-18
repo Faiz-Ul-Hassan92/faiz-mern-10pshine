@@ -6,6 +6,7 @@ import Register from "./components/Register.jsx"
 import Home from "./components/Home.jsx"
 import axios from "axios"
 import Profile from "./components/Profile.jsx"
+import ForgotPassword from "./components/forgotPassword.jsx"
 
 function App() {
   const [user, setUser] = useState(null)
@@ -51,6 +52,7 @@ function App() {
         element={ user ? <Navigate to= "/" /> : <Register setUser={setUser}/>} />
         <Route path="/" element={user ? <Home /> : <Navigate to="/login" /> } />
         <Route path="/profile" element={user ? <Profile user={user} setUser={setUser}/> : <Navigate to="/login" /> } />
+        <Route path="/forgotPassword" element={ <ForgotPassword /> } />
       </Routes>
       </div>
   )
