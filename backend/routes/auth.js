@@ -91,7 +91,7 @@ router.post("/forgetPassword", async (req, res) => {
         subject: "10P Shine: Reset Password ",
         html: `<h1>Reset Your Password</h1>
         <p>Click on the following link to reset your password:</p>
-        <h2><a href="http://localhost:5000/api/users/resetPassword/${token}">Reset Password</a></h2>
+        <h2><a href="http://localhost:5000/resetPassword/${token}">Reset Password</a></h2>
         <p>The link will expire in 10 minutes.</p>
         <p>If you didn't request a password reset, please ignore this email.</p>`,
         };
