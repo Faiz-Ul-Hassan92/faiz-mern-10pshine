@@ -36,6 +36,7 @@ const forgotPassword = () => {
             {error}
         </p>}
 
+        
             <div className="space-y-4 mb-4">
                 <input type="email" value={email} onChange={(e) =>
                  !emailSent && setEmail(e.target.value) } placeholder= "Email" 
