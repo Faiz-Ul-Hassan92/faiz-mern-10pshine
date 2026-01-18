@@ -1,22 +1,28 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Profile = ({ user, setUser}) =>  {
     
     const [error, setError] = useState("")
-    const [changePassword, setChangePassword] = useState(true)
+    const [changePassword, setChangePassword] = useState(false)
     const [password, setPassword] = useState("")
 
     const navigate = useNavigate()
 
     const handleSave = async() => {
 
-
-        //this link is to be made, its dummy right now
-        await axios.put("/api/users/changingPassword", {
-            password
-        })
-        setChangePassword(false)
+        try {
+            const token = localStorage.getItem("token")
+            axios.put("/api/users/changingPassword",
+                { password },
+                { headers: { Authorization: `Bearer: ${token}` } }
+            )
+            setPassword("")
+            setChangePassword(false)
+        }catch(err) {
+            setError("Failed to change password.")
+        }
     }
 
 
@@ -76,10 +82,10 @@ const Profile = ({ user, setUser}) =>  {
                         onChange={(e) => 
                             setPassword(e.target.value)
                         }
-                        className="mt-3 w-full py-2 border rounded-md
+                        className="px-3 mt-3 w-full py-2 border rounded-md
                         outline-none text-white focus:ring-2 
                         focus:ring-blue-400 bg-gray-500"
-                        placeholder="   New Password..."
+                        placeholder="New Password..."
                           />
                     </div>
                     <div className="flex gap-2">
