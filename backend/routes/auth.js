@@ -26,7 +26,7 @@ router.post('/register', async (req, res) => {
 
          const user = await User.create({ username, email, password})
          const token = generateJWT(user._id)
-         
+
          res.status(201).json({
             id: user._id,
             username: user.username,
@@ -91,7 +91,7 @@ router.post("/forgetPassword", async (req, res) => {
         subject: "10P Shine: Reset Password ",
         html: `<h1>Reset Your Password</h1>
         <p>Click on the following link to reset your password:</p>
-        <h2><a href="http://localhost:5000/resetPassword/${token}">Reset Password</a></h2>
+        <h2><a href="http://localhost:5000/api/users/resetPassword/${token}">Reset Password</a></h2>
         <p>The link will expire in 10 minutes.</p>
         <p>If you didn't request a password reset, please ignore this email.</p>`,
         };
@@ -111,8 +111,32 @@ router.post("/forgetPassword", async (req, res) => {
 
 })
 
-router.post("/resetPassword/:token", async (req, res) => {
 
+
+router.post("/resetPassword/:token", async (req, res) => {
+ 
+
+    try {
+    const {newPassword} = req.body
+
+    const token = req.params.token
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+    const user = await User.findById(decoded.id).select("-password")
+
+    if(!user) {
+        res.status(401).json({message:"User Not found, corrupted link"})
+    }
+
+    user.password = newPassword
+    await user.save()
+
+    res.status(201).json({message:"Password Changed. Log In with your new password."})
+
+   } catch(err) {
+    res.status(500).json({message:"Server Error, Password unchanged"})
+   }
 })
 
 
