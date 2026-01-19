@@ -3,6 +3,7 @@ import User from '../models/user.js';
 import { protect } from '../middleware/auth.js';
 import jwt from 'jsonwebtoken';
 import nodemailer from "nodemailer"
+import logger from '../config/logger.js';
 
 const router = express.Router();
 
@@ -17,11 +18,17 @@ router.post('/register', async (req, res) => {
     const {username, email, password} = req.body;
     try {
          if(!username || !email || !password) {
+            logger.info("Missing fields in registration attempt")
             return res.status(400).json({message: "Please fill all the fields"})
          }
          const userExists = await User.findOne({email});
+         const userNameExists = await User.findOne({username})
          if(userExists) {
+            logger.warn({email}, "Registration attempt using an already registered email address")
             return res.status(400).json({message: "User already exists"})
+         }
+         if(userNameExists) {
+            return res.status(400).json({message: "Username already exists"})
          }
 
          const user = await User.create({ username, email, password})
@@ -34,6 +41,7 @@ router.post('/register', async (req, res) => {
             token
          })
     }catch(err) {
+        logger.error("Registration failure due to server error")
         res.status(500).json({message: "Server Error"})
     }
 })
@@ -54,9 +62,11 @@ router.put("/changingPassword", protect, async (req, res) => {
 
         await user.save()
 
+        logger.info( {email: user.email} , "Password Changed from profile page")
         return res.status(200).json({message:"Password updated successfully"})
 
     }catch(err) {
+        logger.warn({email: req.user.email} , "Password Change attempt failed")
         res.status(500).json({message:"Server Error, Password unchanged."})
     }
 })
@@ -101,6 +111,7 @@ router.post("/forgetPassword", async (req, res) => {
         if (err) {
             return res.status(500).send({ message: err.message });
         }
+        logger.info({email} , "Forget Password Sequence initiated")
         res.status(200).send({ message: "Email sent" });
         })
 
@@ -121,7 +132,12 @@ router.post("/resetPassword/:token", async (req, res) => {
 
     const token = req.params.token
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    }catch {
+        logger.warn("Invalid token used for password reset attempt. Password reset failed.")
+        return 
+    }
 
     const user = await User.findById(decoded.id).select("-password")
 
@@ -132,7 +148,8 @@ router.post("/resetPassword/:token", async (req, res) => {
     user.password = newPassword
     await user.save()
 
-    res.status(201).json({message:"Password Changed. Log In with your new password."})
+    logger.info({email: user.email} , "Password Changed using forget password sequence")
+    res.status(200).json({message:"Password Changed. Log In with your new password."})
 
    } catch(err) {
     res.status(500).json({message:"Server Error, Password unchanged"})
@@ -150,9 +167,13 @@ router.post("/login", async (req, res) => {
     try {
         const user = await User.findOne({email})
         if(!user || !(await user.matchPassword(password))) {
+            if(user) {
+                logger.warn({email: user.email}, "Invalid Credentials used for login")
+            }
             return res.status(401).json({message: "Invalid credentials"})
         }
         const token = generateJWT(user._id)
+        logger.info({email: user.email}, "User logged in successfully")
         res.json({
             id: user._id,
             username: user.username,
@@ -162,7 +183,7 @@ router.post("/login", async (req, res) => {
         
 
     } catch(err) {
-
+            logger.error("Login failure due to server error")
             res.status(500).json({message: "Server error"})
 
     }

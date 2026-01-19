@@ -1,5 +1,6 @@
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
+import logger from "../config/logger.js";
 
 //I generated it using nodes crypto library's random generator
 
@@ -16,9 +17,11 @@ export const protect = async (req, res, next) =>{
              return next();
         } catch(err) {
             console.error("Token verification failed", err.message)
+            logger.warn( {url: req.originalUrl, error: err.message} , "Token Verification Failed")
             return res.status(401).json({message: "Not authorized, token failed"})
         }
     }
+    logger.warn( {url: req.originalUrl} , "Unauthorized Access attempted")
     return res.status(401).json({message: "Not authorized, token failed"})
 }
 
