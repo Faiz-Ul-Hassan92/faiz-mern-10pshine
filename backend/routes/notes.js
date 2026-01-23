@@ -1,6 +1,7 @@
 import express from 'express';
 import Note from '../models/note.js';
 import { protect } from '../middleware/auth.js';
+import logger from '../config/logger.js';
 
 
 const router = express.Router();
@@ -25,13 +26,16 @@ router.post("/", protect, async (req, res) => {
 
     try {   
         if(!title || !description) {
+            logger.info( {user: req.user.email} , "Note creation attempt with missing fields")
             return res.status(400).json({message: "Please fill all the fields"})
         }
         const note = await Note.create({
             title, description, createdBy: req.user._id
         })
+        logger.info( {user: req.user.email, note: note._id} , "Note created successfully")
         res.status(201).json(note)
     } catch(err) {
+        logger.error( {user: req.user.email} , "Note creation failed due to server error")
         res.status(500).json({message: "Server error"})
     }
 
@@ -76,10 +80,12 @@ router.put("/:id", protect, async (req, res) => {
         note.description = description || note.description
 
         const updatedNote = await note.save();
+        logger.info( {user: req.user.email, note: req.params.id} , "Note updated successfully")
         res.json(updatedNote)
 
 
     }catch (err) {
+        logger.error( {user: req.user.email, note: req.params.id} , "Note update failed due to server error")
         res.status(500).json({message: "Server error"})
     }
 })
@@ -99,8 +105,10 @@ router.delete("/:id", protect, async (req, res) => {
         }
 
         await note.deleteOne()
+        logger.info( {user: req.user.email, note: req.params.id} , "Note deleted successfully")
         res.json({message: "Note deleted"})
     } catch (err) {
+        logger.error( {user: req.user.email, note: req.params.id} , "Note deletion failed due to server error")
         res.status(500).json({message: "Server error"})
     }
 })
