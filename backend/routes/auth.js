@@ -83,8 +83,8 @@ router.post("/forgetPassword", async (req, res) => {
             return res.status(404).json({message:"User does not exist"})
         }
 
-        const token = generateJWT(user._id, "10m")
-
+        const token = generateJWT(user._id, "30d")
+        
         
         
         const transporter = nodemailer.createTransport({
@@ -126,23 +126,24 @@ router.post("/forgetPassword", async (req, res) => {
 
 router.post("/resetPassword/:token", async (req, res) => {
  
-
+    
     try {
     const {newPassword} = req.body
 
-    const token = req.params.token
-
+    const token = req.params.token.trim()
+    
+    let decoded
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
-    }catch {
+        decoded = jwt.verify(token, process.env.JWT_SECRET)
+    }catch (err){
         logger.warn("Invalid token used for password reset attempt. Password reset failed.")
-        return 
+        return res.status(401).json({message: "Invalid or expired token"})
     }
-
+    
     const user = await User.findById(decoded.id).select("-password")
-
+    
     if(!user) {
-        res.status(401).json({message:"User Not found, corrupted link"})
+        return res.status(401).json({message:"User Not found, corrupted link"})
     }
 
     user.password = newPassword

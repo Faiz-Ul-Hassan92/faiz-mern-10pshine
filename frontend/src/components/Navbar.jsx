@@ -4,6 +4,7 @@ import {useState, useEffect} from "react"
 
 const Navbar = ({user, setUser}) => {
 
+    const [search, setSearch] = useState("")
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -22,15 +23,6 @@ const Navbar = ({user, setUser}) => {
     useEffect(() => {
         setSearch("")
     }, [user])
-
-
-    const handleProfile = () => {
-
-    }
-
-
-
-
 
 
      return( 
