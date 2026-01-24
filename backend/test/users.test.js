@@ -67,4 +67,19 @@ describe("User route testing", function() {
     })
 
 
+    it("Should change user password", async function() {
+        const res = await registerFunction()
+
+
+        let token = res.data.token
+        const changeRes = await axios.put(`${BaseURL}/api/users/changingPassword`,
+            {password: "lets try"}, 
+            {headers: {Authorization: `Bearer ${token}`}}
+        )
+
+        expect(changeRes.status).to.equal(200)
+        expect(changeRes.data.message).to.equal("Password updated successfully")
+    })
+
+
 })
