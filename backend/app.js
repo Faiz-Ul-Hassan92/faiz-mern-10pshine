@@ -4,6 +4,7 @@ import router from './routes/auth.js'
 import notesRouter from './routes/notes.js'
 import logger from './config/logger.js';
 import { pinoHttp } from 'pino-http';
+import { connectDB } from './config/db.js';
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.use(pinoHttp({
 
 
 app.use(express.json());
+await connectDB();
 
 app.use("/api/users", router)
 app.use("/api/notes", notesRouter)
