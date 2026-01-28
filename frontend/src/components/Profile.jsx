@@ -16,7 +16,7 @@ const Profile = ({ user, setUser}) =>  {
             const token = localStorage.getItem("token")
             axios.put("/api/users/changingPassword",
                 { password },
-                { headers: { Authorization: `Bearer: ${token}` } }
+                { headers: { Authorization: `Bearer ${token}` } }
             )
             setPassword("")
             setChangePassword(false)
