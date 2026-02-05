@@ -67,6 +67,25 @@ describe("User route testing", function() {
     })
 
 
+    it("Should not let login pass with wrong password", async function() {
+        await registerFunction()
+
+        try {
+           await axios.post(`${BaseURL}/api/users/login`, {
+            email:"i220818@nu.edu.pk",
+            password:"wrongTesting"
+        })
+        } catch(err) {
+         expect(err.response.status).to.equal(401)
+         expect(err.response.data.message).to.equal("Invalid credentials")
+        }
+
+        
+    })
+
+    
+
+
     it("Should change user password", async function() {
         const res = await registerFunction()
 
@@ -81,5 +100,18 @@ describe("User route testing", function() {
         expect(changeRes.data.message).to.equal("Password updated successfully")
     })
 
+
+    it("Should return profile data if logged in", async function() {
+        const res = await registerFunction()
+        let token = res.data.token
+
+        const profileRes = await axios.get(`${BaseURL}/api/users/profile`, {
+            headers: {Authorization: `Bearer ${token}`}
+        })
+
+        expect(profileRes.status).to.equal(200)
+        expect(profileRes.data.email).to.equal("i220818@nu.edu.pk")
+        expect(profileRes.data.username).to.equal("dummy")
+    })
 
 })
