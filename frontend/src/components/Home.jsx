@@ -104,17 +104,21 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
         gap-4">
             {notes.map((note) =>( 
-                <div className="bg-[#1d324f] p-4 rounded-lg shadow-md" 
+                <div className="bg-[#1d324f] p-4 rounded-lg shadow-md flex flex-col h-[200px]" 
                 key={note._id}>
                     <h3 className="text-lg font-md text-white font-bold mb-2">{note.title}</h3>
-                    <p className="text-white mb-4">{note.description}</p>
-                    <p className="text-sm text-white mb-4">{new Date(note.updatedAt).toLocaleString()}
-                        </p>
-                    <div className="flex space-x-2">
+                    <div 
+                    className="text-white mb-4 prose prose-invert max-w-none overflow-hidden flex-grow"
+                    dangerouslySetInnerHTML={{__html: note.description}}
+                    />
+
+                    <div className="flex items-baseline space-x-2">
                     <button onClick={() => handleEdit(note)} className="bg-yellow-600 text-white
                     px-3 py-1 rounded-md hover:bg-yellow-700">Edit</button>
                     <button onClick={() => handleDelete(note._id)} className="bg-red-600 text-white
                     px-3 py-1 rounded-lg hover:bg-red-700">Delete</button>
+                    <p className="text-sm text-white ml-auto">{new Date(note.updatedAt).toLocaleString()}
+                    </p>
                     </div>
                 </div>)
                 )
