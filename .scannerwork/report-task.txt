@@ -1,0 +1,6 @@
+projectKey=10pShine
+serverUrl=http://localhost:9000
+serverVersion=26.2.0.119303
+dashboardUrl=http://localhost:9000/dashboard?id=10pShine
+ceTaskId=2144c638-9863-4fc2-8299-692065f5dcc2
+ceTaskUrl=http://localhost:9000/api/ce/task?id=2144c638-9863-4fc2-8299-692065f5dcc2
